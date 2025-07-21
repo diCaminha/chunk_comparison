@@ -1,0 +1,5 @@
+idx_fixed
+idx_recursive
+idx_semantic
+.env
+__pycache__/

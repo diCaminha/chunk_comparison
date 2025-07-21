@@ -1,0 +1,23 @@
+# Core LangChain
+langchain>=0.2.10
+langchain-openai>=0.1.0
+langchain-chroma>=0.1.0
+langchain-huggingface>=0.1.0
+
+# OpenAI SDK (chat/completions)
+openai>=1.23.0
+
+# Vector DB client
+chromadb>=0.4.24
+
+# Embeddings / Transformers
+sentence-transformers>=2.6.1
+transformers>=4.41.0
+torch>=2.3.0          # ajuste conforme seu CUDA/CPU
+
+# Data handling
+datasets>=3.0
+tqdm>=4.66.4
+python-dotenv>=1.0.1
+tiktoken
+ir_datasets[tqa]
