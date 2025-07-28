@@ -8,8 +8,12 @@ from semantic_chunker import chunk_docs_via_llm
 def apply_chunker(
     docs: List[Document],
     method: str,
-    chunk_size: int = 500,
-    chunk_overlap: int = 50
+    #chunk_size: int = 350,
+    #chunk_overlap: int = 40
+    chunk_size: int = 512,
+    chunk_overlap: int = 64
+    #chunk_size: int = 800,
+    #chunk_overlap: int = 80
 ) -> List[Document]:
     """
     Split a list of Documents into chunks based on the specified method.

@@ -6,6 +6,7 @@ from tqdm import tqdm
 from dotenv import load_dotenv
 
 from langchain.schema import Document
+from langchain.prompts import PromptTemplate           #  NEW
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
 from langchain_openai import ChatOpenAI
@@ -17,34 +18,44 @@ from metrics  import check_recall, compute_em_f1, report_results
 load_dotenv()                                  # OPENAI_API_KEY, etc.
 
 # ────────────────────────────────────────────────────────────────────
-#  NEW  DATA   (HotpotQA – fullwiki)
+#  Prompt (English, short answer only)
 # ────────────────────────────────────────────────────────────────────
-def build_hotpot_corpus(
-    split: str = "validation",      # "train" ou "validation"
-    slice_pct: int | None = 5,
-):
-    slice_str = f"{split}[:{slice_pct}%]" if slice_pct else split
-    print(f"HotpotQA {slice_str}")
+SHORT_ANSWER_PROMPT = PromptTemplate(
+    input_variables=["context", "question"],
+    template=(
+        "You are a helpful assistant.\n"
+        "Using ONLY the context below, answer the question in ONE short phrase. "
+        "If the answer is not contained in the context, reply \"N/A\".\n\n"
+        "Context:\n{context}\n\n"
+        "Question: {question}\nAnswer:"
+    ),
+)
 
-    # Mirror sem script: parquet puro
-    ds = load_dataset("lucadiliello/hotpotqa", split=slice_str)
-
+# ────────────────────────────────────────────────────────────────────
+#  DATA (HotpotQA – fullwiki)
+# ────────────────────────────────────────────────────────────────────
+def build_hotpot_corpus(split="validation", slice_pct=5):
+    ds = load_dataset("lucadiliello/hotpotqa", split=f"{split}[:{slice_pct}%]")
     docs, qa_pairs = [], []
-    for idx, item in enumerate(ds):
-        doc_id = f"{split}_{idx}"
-        doc_text = item["context"].strip()          # string grandona (~500‑1000 tokens)
-        answer    = item["answers"][0].strip()      # lista -> primeiro span
+    for ex_idx, item in enumerate(ds):
+        # Split on [TLE] to recover the individual source blocks
+        parts = [p.strip() for p in item["context"].split("[TLE]") if p.strip()]
 
-        docs.append(Document(page_content=doc_text,
-                             metadata={"id": doc_id}))
+        for part_idx, part in enumerate(parts):
+            # optional: strip the [SEP] after the title
+            part = part.replace("[SEP]", "", 1).strip()
+            doc_id = f"{split}_{ex_idx}_{part_idx}"
+            docs.append(Document(page_content=part,
+                                 metadata={"id": doc_id,
+                                           "qid": ex_idx,
+                                           "support_idx": part_idx}))
         qa_pairs.append((item["question"].strip(),
-                         answer,
-                         doc_id))
+                         item["answers"][0].strip(),
+                         ex_idx))           # keep qid -> matches metadata["qid"]
     return docs, qa_pairs
 
-
 # ────────────────────────────────────────────────────────────────────
-#  PIPELINE (inalterada)
+#  PIPELINE
 # ────────────────────────────────────────────────────────────────────
 def evaluate_chunking(
     method: str,
@@ -61,7 +72,6 @@ def evaluate_chunking(
     embed_model = HuggingFaceEmbeddings(
         model_name="sentence-transformers/multi-qa-MiniLM-L6-cos-v1"
     )
-
     idx_dir = f"./idx_{method}"
     if os.path.exists(idx_dir):
         shutil.rmtree(idx_dir)
@@ -72,40 +82,40 @@ def evaluate_chunking(
 
     retriever = vectordb.as_retriever(search_kwargs={"k": k})
 
-    # 3) LLM (map_rerank) -------------------------------------------
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, max_tokens=1024)
+    # 3) LLM + QA chain ----------------------------------------------
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, max_tokens=256)
+
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
-        chain_type="map_rerank",
+        chain_type="stuff",                     
         retriever=retriever,
-        return_source_documents=False,
+        return_source_documents=True,           
+        chain_type_kwargs={"prompt": SHORT_ANSWER_PROMPT},
     )
 
-    # 4) Avaliação ---------------------------------------------------
-    tot_rec = tot_em = tot_f1 = 0.0
+    # 4) Avaliação ----------------------------------------------------
+    preds, golds, recalls = [], [], []
     for q, gold, _ in tqdm(qa_pairs, desc=f"Evaluating {method}"):
-        tot_rec += check_recall(retriever.get_relevant_documents(q), gold)
-        pred = qa_chain.run(q)
-        em, f1 = compute_em_f1([pred], [gold])
-        tot_em += em
-        tot_f1 += f1
+        out       = qa_chain({"query": q})
+        resp_ai   = out["result"]
+        src_docs  = out["source_documents"]
 
-    n = len(qa_pairs)
-    report_results(
-        method,
-        tot_em / n,
-        tot_f1 / n,
-        (tot_rec / n) * 100,
-        chunk_time_ms,
-    )
+        preds.append(resp_ai)
+        golds.append(gold)
+        recalls.append(check_recall(src_docs, gold))
 
+    em, f1 = compute_em_f1(preds, golds)
+    recall_k = sum(recalls) / len(recalls) * 100
+
+    report_results(method, em, f1, recall_k, chunk_time_ms)
 
 # ────────────────────────────────────────────────────────────────────
 #  MAIN
 # ────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    docs, qa_pairs = build_hotpot_corpus(split="validation", slice_pct=10)
+    docs, qa_pairs = build_hotpot_corpus(split="validation", slice_pct=6)
     print(f"Loaded {len(docs)} docs and {len(qa_pairs)} QA pairs.")
 
-    for method in ["semantic"]:
+    for method in ["recursive"]:
+    #for method in ["semantic"]:
         evaluate_chunking(method, docs, qa_pairs)
