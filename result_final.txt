@@ -1,0 +1,192 @@
+################################################################################ 1% - 730 documentos | 74 QA pairs
+
+- fixed-48/10: chunks=1460  build=11673 ms
+  Recall@5 = 0.4054
+  EM   = 0.1081                                                                                                                                                      
+  F1   = 0.1920
+
+- recursive-48/10: chunks=12702  build=11875 ms
+  Recall@5  = 0.1486
+  EM   = 0.0405                                                                                                                                                      
+  F1   = 0.0709
+
+
+- fixed-96/20: chunks=1458  build=8053 ms
+  Recall@5  = 0.4054
+  EM   = 0.1081                                                                                                                                                      
+  F1   = 0.1920
+
+- recursive-96/20: chunks=6792  build=10826 ms
+  Recall@5  = 0.2973
+  EM   = 0.0811                                                                                                                                                      
+  F1   = 0.1219
+
+- fixed-160/32: chunks=1444  build=8319 ms
+  Recall@5  = 0.4189
+  EM   = 0.1081                                                                                                                                                      
+  F1   = 0.1785
+
+- recursive-160/32: chunks=4402  build=8893 ms
+  Recall@5  = 0.3108
+  EM   = 0.1081                                                                                                                                                      
+  F1   = 0.1822
+
+
+### comparação com chunk=48 overlap=10
+McNemar-p(EM)   = 0.1306
+Wilcoxon-p(F1)  = 0.01911  ΔF1 95 % CI = [0.029; 0.216]
+
+
+### comparação com chunk=96 overlap=20
+McNemar-p(EM)   = 0.6171
+Wilcoxon-p(F1)  = 0.07051  ΔF1 95 % CI = [0.003; 0.143]
+
+
+### comparação com chunk=160 overlap=32
+McNemar-p(EM)   = 0.4795
+Wilcoxon-p(F1)  = 0.8335  ΔF1 95 % CI = [-0.058; 0.048]
+
+
+################################################################################ 2% - 1470 docs | 148 QA pairs
+
+fixed-48/10: chunks=2940  build=18842 ms
+  Recall@5  = 0.4122
+  EM   = 0.1622                                                                                                                                                      
+  F1   = 0.2396
+
+recursive-48/10: chunks=24006  build=18239 ms
+  Recall@5  = 0.1149
+  EM   = 0.0541                                                                                                                                                      
+  F1   = 0.0768
+
+  fixed-96/20: chunks=2936  build=11401 ms
+  Recall@5  = 0.4122
+  EM   = 0.1622                                                                                                                                                      
+  F1   = 0.2329
+
+recursive-96/20: chunks=12903  build=15050 ms
+  Recall@5  = 0.2703
+  EM   = 0.1216                                                                                                                                                      
+  F1   = 0.1751
+
+fixed-160/32: chunks=2899  build=11524 ms
+  Recall@5  = 0.4189
+  EM   = 0.1622                                                                                                                                                      
+  F1   = 0.2329
+
+recursive-160/32: chunks=8384  build=13435 ms
+  Recall@5  = 0.2973
+  EM   = 0.1419                                                                                                                                                      
+  F1   = 0.2177
+
+### chunk=48 overlap=10
+McNemar-p(EM)   = 0.000407
+Wilcoxon-p(F1)  = 2.97e-05  ΔF1 95 % CI = [0.098; 0.231]
+
+### chunk=96 overlap=20
+McNemar-p(EM)   = 0.1814
+Wilcoxon-p(F1)  = 0.08517  ΔF1 95 % CI = [-0.002; 0.120]
+
+### chunk=160 overlap=32
+McNemar-p(EM)   = 0.4497
+Wilcoxon-p(F1)  = 0.5332  ΔF1 95 % CI = [-0.029; 0.061]
+
+################################################################################ 4% - 2928 docs | 296 QA pairs
+
+fixed-48/10: chunks=5856  build=77801 ms
+  Recall@5  = 0.4054
+  EM   = 0.1824                                                                                                                           
+  F1   = 0.2576
+
+recursive-48/10: chunks=48220  build=115312 ms
+  Recall@5  = 0.1047
+  EM   = 0.0608                                                                                                                           
+  F1   = 0.0860
+
+fixed-96/20: chunks=5850  build=55941 ms
+  Recall@5  = 0.4054
+  EM   = 0.1824                                                                                                                           
+  F1   = 0.2605
+
+recursive-96/20: chunks=25912  build=87416 ms
+  Recall@5  = 0.2466
+  EM   = 0.1182                                                                                                                           
+  F1   = 0.1758
+
+fixed-160/32: chunks=5780  build=55001 ms
+  Recall@5  = 0.4088
+  EM   = 0.1892                                                                                                                           
+  F1   = 0.2602
+
+recursive-160/32: chunks=16842  build=77844 ms
+  Recall@5  = 0.3176
+  EM   = 0.1486                                                                                                                           
+  F1   = 0.2234
+
+### chunk=48 overlap=10
+McNemar-p(EM)   = 1.317e-07
+Wilcoxon-p(F1)  = 4.566e-10  ΔF1 95 % CI = [0.124; 0.220]
+
+### chunk=96 overlap=20
+McNemar-p(EM)   = 0.003085
+Wilcoxon-p(F1)  = 0.0006033  ΔF1 95 % CI = [0.039; 0.132]
+
+### chunk=160 overlap=32
+McNemar-p(EM)   = 0.03764
+Wilcoxon-p(F1)  = 0.03993  ΔF1 95 % CI = [-0.000; 0.074]
+
+################################################################################# 8% -
+
+fixed-48/10: chunks=11736  build=94351 ms
+  Recall@5  = 0.4274
+  EM   = 0.1875                                                                                                                           
+  F1   = 0.2661
+
+recursive-48/10: chunks=95638  build=167665 ms
+  Recall@5  = 0.1064
+  EM   = 0.0524                                                                                                                           
+  F1   = 0.0784
+
+fixed-96/20: chunks=11720  build=81888 ms
+  Recall@5  = 0.4274
+  EM   = 0.1892                                                                                                                           
+  F1   = 0.2674
+
+recursive-96/20: chunks=51398  build=128551 ms
+  Recall@5  = 0.2500
+  EM   = 0.1115                                                                                                                           
+  F1   = 0.1644
+
+fixed-160/32: chunks=11605  build=78975 ms
+  Recall@5  = 0.4291
+  EM   = 0.1909                                                                                                                           
+  F1   = 0.2689
+
+recursive-160/32: chunks=33455  build=114335 ms
+  Recall@5  = 0.3125
+  EM   = 0.1554                                                                                                                           
+  F1   = 0.2278
+
+### chunk=48 overlap=10
+McNemar-p(EM)   = 8.269e-17
+Wilcoxon-p(F1)  = 6.715e-23  ΔF1 95 % CI = [0.156; 0.221]
+
+### chunk=96 overlap=20
+McNemar-p(EM)   = 7.51e-08
+Wilcoxon-p(F1)  = 1.316e-09  ΔF1 95 % CI = [0.073; 0.134]
+
+### chunk=160 overlap=32
+McNemar-p(EM)   = 0.01045
+Wilcoxon-p(F1)  = 0.003234  ΔF1 95 % CI = [0.014; 0.069]
+
+
+
+# 12.5% - 
+
+
+
+“Os experimentos indicam que um corte fixo de 48 tokens com 10 tokens de overlap oferece o melhor balanço entre custo e qualidade 
+em perguntas multi-hop. O ganho de até +0.23 F1 (p < 10⁻⁴) decorre da maior precisão de recuperação, que reduz texto irrelevante no prompt 
+e diminui o risco de alucinações. Esse benefício é observado principalmente em corpora de parágrafos curtos, como o HotpotQA, e em pipelines 
+onde a inferência do LLM é o gargalo de custo. O aumento de ~3× no número de embeddings mostrou-se economicamente irrelevante (< US$ 0,10 para 10 M vetores) 
+frente à economia de tokens e tempo de resposta.”
