@@ -3,8 +3,6 @@ from langchain.text_splitter import CharacterTextSplitter, RecursiveCharacterTex
 from langchain.schema import Document
 from typing import List, Literal
 
-from semantic_chunker import chunk_docs_via_llm
-
 
 Splitter = Literal["fixed", "recursive"]
 

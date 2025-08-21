@@ -14,6 +14,7 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_openai import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain_community.vectorstores import FAISS
+from langchain_openai import OpenAIEmbeddings
 
 from chunkers import apply_chunker
 from metrics  import check_recall, per_example_metrics
@@ -21,8 +22,6 @@ from metrics  import check_recall, per_example_metrics
 from statsmodels.stats.contingency_tables import mcnemar
 from scipy.stats import wilcoxon
 
-from openai import OpenAI
-client = OpenAI()
 
 load_dotenv() 
 
@@ -52,7 +51,7 @@ def build_hotpot_corpus(split="validation"):
 #  Etapa 1 – Chunk + índice
 def store_chunks(docs, method, chunk_size, chunk_overlap, k=5):
     
-    embed = HuggingFaceEmbeddings(model_name="sentence-transformers/multi-qa-MiniLM-L6-cos-v1")
+    embed = OpenAIEmbeddings(model="text-embedding-3-large")
 
     chunks = apply_chunker(docs, method, chunk_size, chunk_overlap)
     
